@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Naruto RPG Demo</title>
+  <style>
+    body {
+      background-color: #111;
+      color: #fff;
+      font-family: sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+    #game {
+      padding: 20px;
+    }
+    .character {
+      max-width: 150px;
+    }
+    .btn {
+      background-color: #f90;
+      border: none;
+      color: #000;
+      padding: 10px 20px;
+      font-size: 18px;
+      margin: 10px;
+      cursor: pointer;
+    }
+    .health {
+      height: 20px;
+      background-color: red;
+    }
+    .bar {
+      background-color: green;
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div id="game">
+    <h1>Naruto RPG</h1>
+    <img src="naruto.png" class="character" />
+    <button class="btn" onclick="startGame()">Jogar</button>
+  </div>
+
+  <script>
+    const gameDiv = document.getElementById('game');
+
+    function startGame() {
+      gameDiv.innerHTML = \`
+        <h2>Escolha seu personagem:</h2>
+        <button class="btn" onclick="selectCharacter('Naruto')">Naruto</button>
+        <button class="btn" onclick="selectCharacter('Sasuke')">Sasuke</button>
+      \`;
+    }
+
+    function selectCharacter(name) {
+      const player = {
+        name,
+        hp: 100,
+        jutsu: name === 'Naruto' ? 'Rasengan' : 'Chidori',
+        attack: 20,
+        jutsuPower: 35
+      };
+      const enemy = {
+        name: 'Ninja Renegado',
+        hp: 100,
+        attack: 15
+      };
+
+      startBattle(player, enemy);
+    }
+
+    function startBattle(player, enemy) {
+      gameDiv.innerHTML = \`
+        <h2>\${player.name} vs \${enemy.name}</h2>
+        <img src="\${player.name.toLowerCase()}.png" class="character" />
+        <div><strong>\${player.name} HP:</strong> <span id="player-hp">\${player.hp}</span></div>
+        <div><strong>\${enemy.name} HP:</strong> <span id="enemy-hp">\${enemy.hp}</span></div>
+        <button class="btn" onclick="attack('basic')">Ataque Básico</button>
+        <button class="btn" onclick="attack('jutsu')">\${player.jutsu}</button>
+      \`;
+
+      window.player = player;
+      window.enemy = enemy;
+    }
+
+    function attack(type) {
+      let damage = type === 'basic' ? player.attack : player.jutsuPower;
+      enemy.hp -= damage;
+      if (enemy.hp <= 0) {
+        gameDiv.innerHTML = \`<h2>Você venceu!</h2><button class="btn" onclick="startGame()">Jogar Novamente</button>\`;
+        return;
+      }
+
+      player.hp -= enemy.attack;
+      if (player.hp <= 0) {
+        gameDiv.innerHTML = \`<h2>Você foi derrotado...</h2><button class="btn" onclick="startGame()">Tentar Novamente</button>\`;
+        return;
+      }
+
+      document.getElementById('player-hp').textContent = player.hp;
+      document.getElementById('enemy-hp').textContent = enemy.hp;
+    }
+  </script>
+</body>
+</html>
